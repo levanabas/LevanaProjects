@@ -1,0 +1,11 @@
+# cluster.yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: levana-cluster        # השם של הקלסטר
+  region: us-west-2         
+  version: "1.29"           # גרסת Kubernetes
+
+autoModeConfig:
+  enabled: true             # הפעלת Auto Mode
