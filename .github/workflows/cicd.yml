@@ -1,0 +1,39 @@
+name: Build and Deploy to EKS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-west-2
+      AWS_ACCOUNT_ID: 601440149085
+      ECR_REPOSITORY: pacman
+      IMAGE_TAG: latest
+      EKS_CLUSTER_NAME: levana-cluster   # שנה אם צריך
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push Docker image
+        run: |
+          aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 601440149085.dkr.ecr.us-west-2.amazonaws.com
+          docker build -t pacman .
+          docker tag pacman:latest 601440149085.dkr.ecr.us-west-2.amazonaws.com/pacman:latest
+          docker push 601440149085.dkr.ecr.us-west-2.amazonaws.com/pacman:latest
+
