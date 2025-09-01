@@ -30,12 +30,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-        - name: Build, tag, and push Docker image
-          run: |
-          aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 601440149085.dkr.ecr.us-west-2.amazonaws.com
-          docker build -t pacman -f pacman/docker/Dockerfile pacman/
-          docker tag pacman:latest 601440149085.dkr.ecr.us-west-2.amazonaws.com/pacman:latest
-          docker push 601440149085.dkr.ecr.us-west-2.amazonaws.com/pacman:latest
+      - name: Build, tag, and push Docker image
+        run: |
+           aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 601440149085.dkr.ecr.us-west-2.amazonaws.com
+           docker build -t pacman \
+           -f pacman/docker/Dockerfile pacman/
+           docker tag pacman:latest 601440149085.dkr.ecr.us-west-2.amazonaws.com/pacman:latest
+           docker push 601440149085.dkr.ecr.us-west-2.amazonaws.com/pacman:latest
+
 
       
 
